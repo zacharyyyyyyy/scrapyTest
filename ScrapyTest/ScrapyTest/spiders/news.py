@@ -4,8 +4,9 @@ import scrapy
 
 class NewsSpider(scrapy.Spider):
     name = 'news'
-    allowed_domains = ['/china.huanqiu.com/article']
+    allowed_domains = ['china.huanqiu.com']
     start_urls = ['http://china.huanqiu.com/article/index.html?agt=15438']
+    max_page=30
 
     def parse(self, response):
         title=response.xpath('//div[@class="fallsFlow"]/ul/li/h3/a/text()').extract()
@@ -17,4 +18,11 @@ class NewsSpider(scrapy.Spider):
 
         ThisPage=response.xpath('//div[@class="pageBox"]/div/span/text()').extract()
         print("第 %s 页"%ThisPage[0])
+
+        NextUrl=response.xpath('//div[@class="pageBox"]/div/a[@class="a1"]/@href').extract()
+
+        if int(ThisPage[0]) < int(self.max_page):
+            url = response.urljoin(NextUrl[1])
+            yield scrapy.Request(url, callback=self.parse)
+
 
