@@ -18,6 +18,7 @@ class NewsSpider(scrapy.Spider):
 
         ThisPage=response.xpath('//div[@class="pageBox"]/div/span/text()').extract()
         print("第 %s 页"%ThisPage[0])
+        print('\n')
 
         NextUrl=response.xpath('//div[@class="pageBox"]/div/a[@class="a1"]/@href').extract()
 
